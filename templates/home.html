@@ -1,63 +1,122 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Model Input Form</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f2f2f2;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-        form {
-            background: white;
-            padding: 20px 30px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-        input[type="number"] {
-            display: block;
-            width: 100%;
-            margin-bottom: 15px;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-        button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px;
-            border: none;
-            width: 100%;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #45a049;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>Fire Risk Prediction</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to right, #4568dc, #b06ab3);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 50px;
+    }
+
+    h2 {
+      font-size: 2rem;
+      margin-bottom: 20px;
+    }
+
+    form {
+      background-color: rgba(255,255,255,0.1);
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+      max-width: 500px;
+      width: 100%;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 15px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      font-size: 1rem;
+      background-color: #ffffff;
+      color: #b06ab3;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #f0f0f0;
+    }
+
+    .results {
+      margin-top: 20px;
+      font-size: 1.2rem;
+      color: #ffffaa;
+    }
+
+    details {
+      margin-top: 40px;
+      max-width: 500px;
+      background: rgba(255,255,255,0.1);
+      padding: 20px;
+      border-radius: 12px;
+    }
+
+    summary {
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 1.1rem;
+    }
+
+    ul {
+      text-align: left;
+      padding-left: 20px;
+    }
+  </style>
 </head>
 <body>
-
-<form action="{{url_for('predict_datapoint')}}" method="post">
-    <h2>Enter Model Parameters</h2>
-    <input type="text" name="Temperature" placeholder="Temperature" step="any" required="required" /><br>
-    <input type="text" name="RH" placeholder="RH"  required="required" /><br>
-    <input type="text" name="Ws" placeholder="Ws"  required="required" /><br>
-    <input type="text" name="Rain" placeholder="Rain"  required="required" /><br>
-    <input type="text" name="FFMC" placeholder="FFMC"  required="required" /><br>
-    <input type="text" name="DMC" placeholder="DMC"  required="required" /><br>
-    <input type="text" name="ISI" placeholder="ISI"  required="required" /><br>
-    <input type="text" name="Classes" placeholder="Classes"  required="required" /><br>
-    <input type="text" name="Region" placeholder="Region"  required="required" /><br>
+  <h2>Enter Parameters to Predict Forest Fire Risk</h2>
+  
+  <form action="/predictdata" method="POST">
+    <input type="number" name="Temperature" placeholder="Temperature (°C)" required>
+    <input type="number" name="RH" placeholder="Relative Humidity (%)" required>
+    <input type="number" name="Ws" placeholder="Wind Speed (km/h)" required>
+    <input type="number" name="Rain" placeholder="Rain (mm)" required>
+    <input type="number" name="FFMC" placeholder="FFMC Index" required>
+    <input type="number" name="DMC" placeholder="DMC Index" required>
+    <input type="number" name="ISI" placeholder="ISI Index" required>
+    <input type="number" name="Classes" placeholder="Fire Class (0 = No, 1 = Fire)" required>
+    <input type="number" name="Region" placeholder="Region (0 = Bejaia, 1 = Sidi-Bel Abbes)" required>
+    
     <button type="submit">Predict</button>
-</form>
+  </form>
 
-<h2>
-    The FWI prediction is {{results}}
-</h2>
+  {% if results %}
+    <div class="results">
+      🔥 Prediction Result: {{ results }}
+    </div>
+  {% endif %}
+
+  <details>
+    <summary>🔍 Parameter Info</summary>
+    <ul>
+      <li><strong>Temperature</strong>: Ambient temperature in °C</li>
+      <li><strong>RH</strong>: Relative Humidity (%)</li>
+      <li><strong>Ws</strong>: Wind speed (km/h)</li>
+      <li><strong>Rain</strong>: Rainfall in mm</li>
+      <li><strong>FFMC</strong>: Fine Fuel Moisture Code — moisture content of surface litter</li>
+      <li><strong>DMC</strong>: Duff Moisture Code — moisture of shallow organic layers</li>
+      <li><strong>ISI</strong>: Initial Spread Index — potential fire spread rate</li>
+      <li><strong>Classes</strong>: Binary label — 0 = No Fire, 1 = Fire</li>
+      <li><strong>Region</strong>: 0 = Bejaia region, 1 = Sidi-Bel Abbes region</li>
+    </ul>
+  </details>
 </body>
 </html>
